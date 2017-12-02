@@ -42,6 +42,13 @@ public class Test {
 	//
 	private static int stuID = 0, stuTERM = 0;
 
+	private static void menu() {
+		// TODO Auto-generated method stub
+		System.out.println(
+				"功能如下：\r\n(提示请输入小括号内字母)\r\n\t评教(TE)：查询已评教记录或进行一键评教\r\n\t最近成绩查询(SS)：*****\r\n\t课表查询(CC):************\r\n\t课程查询(JC):*****************\r\n\t学期成绩查询(CS):******\r\n\t课程分数比例(CR):*******\r\n\t菜单查看(M)\r\n\t退出(Q)");
+
+	}
+
 	/**
 	 * @param args
 	 * @throws IOException
@@ -52,7 +59,7 @@ public class Test {
 		Scanner scanner = null;
 		try {
 			String username = null, passwd = null, url = loginUrl;
-			int num = 0, term = 0;
+			int num = 0, term = 0,asId=0;
 			scanner = new Scanner(System.in);
 			if (args.length != 2) {
 				System.out.print("输入教学号：");
@@ -67,20 +74,58 @@ public class Test {
 			uimsLogin(url, username, passwd);
 
 			// start do something here .....
-			uimsTeachingEvaluation();
+			menu();
+			boolean flag = true;
+			while (flag) {
+				System.out.print("功能选择：");
+				String ss = scanner.nextLine().trim().toUpperCase();
+				switch (ss) {
+				case "TE":
+					uimsTeachingEvaluation();
+					break;
+				case "SS":
+					System.out.print("输入查询最近科目数：");
+					num = Integer.parseInt(scanner.nextLine().trim());
+					if (num <= 0)
+						num = 15;
+					uimsScore(num, false);
+					break;
+				case "CC":
+					System.out.printf("(课表查询)输入待查询学期(当前学期：%1$3d)：", stuTERM);
+					term = Integer.parseInt(scanner.nextLine().trim());
+					if (term > stuTERM)
+						term = stuTERM;
+					uimsCourse(term);
+					break;
+				case "JC":
+					System.out.printf("(课程查询)输入待查询学期(当前学期：%1$3d)：", stuTERM);
+					term = Integer.parseInt(scanner.nextLine().trim());
+					if (term > stuTERM)
+						term = stuTERM;
+					uimsjustCourse(term);
+					break;
+				case "CR":
+					System.out.printf("(分数比例查询)输入待查询课程内部ID：");
+					asId = Integer.parseInt(scanner.nextLine().trim());
+					uimsScoreRate(asId);
+					break;
+				case "CS":
+					System.out.printf("(分数查询)输入待查询学期(当前学期：%1$3d)：", stuTERM);
+					term = Integer.parseInt(scanner.nextLine().trim());
+					if (term > stuTERM)
+						term = stuTERM;
+					uimsScoreCourse(term);
+					break;
+				case "Q":
+					flag = false;
+					break;
+			
+				default:
+					menu();
+					break;
+				}
+			}
 
-			System.out.print("输入查询最近科目数：");
-			num = Integer.parseInt(scanner.nextLine().trim());
-			if (num <= 0)
-				num = 15;
-
-			uimsScore(num, false);
-
-			System.out.printf("输入待查询学期(当前学期：%1$3d)：", stuTERM);
-			term = Integer.parseInt(scanner.nextLine().trim());
-			if (term > stuTERM)
-				term = stuTERM;
-			uimsCourse(term);
 			//
 			uimsLogout();
 
@@ -364,31 +409,9 @@ public class Test {
 
 				// 比例查询
 				if (flag) {
-					HttpPost scoreRate = new HttpPost("http://uims.jlu.edu.cn/ntms/score/course-score-stat.do");
-					params = "{\"asId\":\"" + asId + "\"}";
-					scoreRate.addHeader("Content-Type", "application/json");
-					scoreRate.addHeader("User-Agent",
-							"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36");
-					scoreRate.setEntity(new StringEntity(params));
-					response = client.execute(scoreRate);
-					if (response.getStatusLine().getStatusCode() == 200) {
-						String resultRate = EntityUtils.toString(response.getEntity());
-						JSONObject rate = new JSONObject(resultRate);
-						JSONArray items = rate.getJSONArray("items");
-						System.out.println();
-						for (int j = 0; j < items.length(); j++) {
-							JSONObject item = items.getJSONObject(j);
-							String label = item.getString("label");
-							label = String.format("%-15s", label);
-							String percent = item.getString("percent");
-							System.out.println("\t\t等级：" + label + "占比：" + percent);
-						}
-						System.out.println("\n");
-					}
-					scoreRate.abort();
+					uimsScoreRate(Integer.parseInt(asId.trim()));
 				}
 			}
-
 		} catch (IOException | JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -481,6 +504,140 @@ public class Test {
 
 		}
 
+	}
+
+	/***
+	 * 课程查询
+	 * 
+	 * @param term
+	 */
+	private static void uimsjustCourse(int term) {
+		// TODO Auto-generated method stub
+		try {
+			HttpPost post = new HttpPost("http://uims.jlu.edu.cn/ntms/service/res.do");
+			String payLoad = "{\"tag\":\"termScore@inqueryTermScore\",\"branch\":\"default\",\"params\":{\"termId\":"
+					+ term + ",\"studId\":" + stuID + "}}";
+			post.addHeader("Content-Type", "application/json");
+			post.addHeader("User-Agent",
+					"Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36");
+			post.setEntity(new StringEntity(payLoad));
+
+			HttpResponse response = client.execute(post);
+			System.out.println("课程查询：" + response.getStatusLine());
+			String result = EntityUtils.toString(response.getEntity());
+			post.abort();
+
+			JSONObject jsonObject = new JSONObject(result);
+			JSONArray values = jsonObject.getJSONArray("value");
+			for (int i = 0; i < values.length(); i++) {
+				JSONObject value = values.getJSONObject(i);
+				String courName = value.getJSONObject("lesson").getJSONObject("courseInfo").getString("courName");
+				String termName = value.getJSONObject("teachingTerm").getString("termName");
+				String isReselect = value.getJSONObject("apl").getString("isReselect");
+				String credit = value.getJSONObject("apl").getJSONObject("planDetail").getString("credit");
+				System.out.printf("学期：%2$s  学分：%4$-4s  重修：%3$s  课程：%1$-24s %n", courName, termName, isReselect, credit);
+			}
+		} catch (IOException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			try {
+				client.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} finally {
+
+		}
+	}
+
+	private static void uimsScoreCourse(int term) {
+		// TODO Auto-generated method stub
+		try {
+			String payLoad = "{\"tag\":\"archiveScore@queryCourseScore\",\"branch\":\"byTerm\",\"params\":{\"studId\":"
+					+ stuID + ",\"termId\":" + term + "},\"orderBy\":\"teachingTerm.termId, course.courName\"}";
+			HttpPost scorebyCourse = new HttpPost("http://uims.jlu.edu.cn/ntms/service/res.do");
+			scorebyCourse.addHeader("Content-Type", "application/json");
+			scorebyCourse.addHeader("User-Agent",
+					"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36");
+			scorebyCourse.setEntity(new StringEntity(payLoad));
+
+			HttpResponse response = client.execute(scorebyCourse);
+			System.out.println("成绩按学期查询：" + response.getStatusLine());
+			String result = EntityUtils.toString(response.getEntity());
+			scorebyCourse.abort();
+
+			JSONObject scoreRaw = new JSONObject(result);
+			JSONArray scoreValue = scoreRaw.getJSONArray("value");
+			for (int i = 0; i < scoreValue.length(); i++) {
+				JSONObject rawScore = scoreValue.getJSONObject(i);
+				String courName = rawScore.getJSONObject("course").getString("courName");
+				String asId = rawScore.getString("asId");// 双击显示比例
+				String score = rawScore.getString("score");
+				String scoreNum = rawScore.getString("scoreNum");
+				String credit = rawScore.getString("credit");
+				String isPass = rawScore.getString("isPass");
+				String isReselect = rawScore.getString("isReselect");
+				String gpoint = rawScore.getString("gpoint");
+				String termName = rawScore.getJSONObject("teachingTerm").getString("termName");
+				System.out.printf(
+						"学期：%1$s  学分：%5$-3s  及格：%6$s 重修：%7$s 分数：%3$-4s(%4$s) 绩点：%8$-4s 内部ID:%9$s   课程：%2$-24s%n",
+						termName, courName, score, scoreNum, credit, isPass, isReselect, gpoint, asId);
+			}
+
+		} catch (IOException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			try {
+				client.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+		} finally {
+
+		}
+	}
+
+	private static void uimsScoreRate(int asId) {
+		// TODO Auto-generated method stub
+		// 比例查询
+		try {
+			HttpPost scoreRate = new HttpPost("http://uims.jlu.edu.cn/ntms/score/course-score-stat.do");
+			String params = "{\"asId\":\"" + asId + "\"}";
+			scoreRate.addHeader("Content-Type", "application/json");
+			scoreRate.addHeader("User-Agent",
+					"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36");
+			scoreRate.setEntity(new StringEntity(params));
+			HttpResponse response = client.execute(scoreRate);
+			if (response.getStatusLine().getStatusCode() == 200) {
+				String resultRate = EntityUtils.toString(response.getEntity());
+				JSONObject rate = new JSONObject(resultRate);
+				JSONArray items = rate.getJSONArray("items");
+				System.out.println();
+				for (int j = 0; j < items.length(); j++) {
+					JSONObject item = items.getJSONObject(j);
+					String label = item.getString("label");
+					label = String.format("%-15s", label);
+					String percent = item.getString("percent");
+					System.out.println("\t\t等级：" + label + "占比：" + percent);
+				}
+				System.out.println("\n");
+			}
+			scoreRate.abort();
+		} catch (IOException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			try {
+				client.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}finally {
+			
+		}
 	}
 
 	/**

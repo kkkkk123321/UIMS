@@ -7,9 +7,10 @@ get.addHeader("Cookie", "loginPage=userLogin.jsp; alu=" + 教学号+ "; pwdStren
 ```
 
 ### 登陆时，表单向http://uims.jlu.edu.cn/ntms/j_spring_security_check提交的数据
-| 数据 | 解释
-| j_username | 教学号
-| j_password | （UIMS+教学号+密码）所生成的MD5
+| 数据 | 解释 |
+|------|-------|
+| j_username | 教学号 |
+| j_password | （UIMS+教学号+密码）所生成的MD5 |
 
 一次跳转-> 
 ```java

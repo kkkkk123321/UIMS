@@ -19,11 +19,9 @@ System.out.println("中间跳转 ---> " + login_suss);
 
 HttpGet get = new HttpGet(login_suss);
 get.addHeader("Upgrade-Insecure-Requests", "1");
-get.addHeader("Cookie", "loginPage=userLogin.jsp; alu=" + username
-					+ "; pwdStrength=1; ");
+get.addHeader("Cookie", "loginPage=userLogin.jsp; alu=" + username+ "; pwdStrength=1; ");
 
-get.addHeader("User-Agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
+get.addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
 response = client.execute(get);
 System.out.println("跳转登陆:\t" + response.getStatusLine());
 ```

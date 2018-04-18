@@ -35,21 +35,17 @@ POST http://uims.jlu.edu.cn/ntms/action/getCurrentUserInfo.do
 #### 数据示例
 
 ##### 评教：
-  查看未评记录："{\"tag\":\"student@evalItem\",\"branch\":\"self\",\"params\":{\"blank\":\"Y\"}}"
-  评教数据："{\"evalItemId\":\"" + evalItemId
-						+ "\",\"answers\":{\"prob11\":\"A\",\"prob12\":\"A\",\"prob13\":\"D\",\"prob14\":\"A\",\"prob15\":\"D\",\"prob21\":\"A\",\"prob22\":\"A\",\"prob23\":\"A\",\"prob31\":\"A\",\"prob32\":\"A\",\"prob41\":\"A\",\"prob42\":\"A\",\"prob43\":\"C\",\"prob51\":\"A\",\"prob52\":\"A\",\"sat6\":\"A\",\"mulsel71\":\"L\",\"advice8\":\"\"}}"
-  查看已评记录："{\"tag\":\"student@evalItem\",\"branch\":\"self\",\"params\":{\"done\":\"Y\"}}"
+  查看未评记录：```"{\"tag\":\"student@evalItem\",\"branch\":\"self\",\"params\":{\"blank\":\"Y\"}}"```
+  评教数据：```"{\"evalItemId\":\"" + evalItemId+ "\",\"answers\":{\"prob11\":\"A\",\"prob12\":\"A\",\"prob13\":\"D\",\"prob14\":\"A\",\"prob15\":\"D\",\"prob21\":\"A\",\"prob22\":\"A\",\"prob23\":\"A\",\"prob31\":\"A\",\"prob32\":\"A\",\"prob41\":\"A\",\"prob42\":\"A\",\"prob43\":\"C\",\"prob51\":\"A\",\"prob52\":\"A\",\"sat6\":\"A\",\"mulsel71\":\"L\",\"advice8\":\"\"}}"```
+  查看已评记录：```"{\"tag\":\"student@evalItem\",\"branch\":\"self\",\"params\":{\"done\":\"Y\"}}"```
 
 ##### 成绩：
-  查看最新成绩："{\"tag\":\"archiveScore@queryCourseScore\",\"branch\":\"latest\",\"params\":{},\"rowLimit\":"+ num + "}"
-  查看某一科比例："{\"asId\":\"" + asId + "\"}"
+  查看最新成绩：```"{\"tag\":\"archiveScore@queryCourseScore\",\"branch\":\"latest\",\"params\":{},\"rowLimit\":"+ num + "}"```
+  查看某一科比例：```"{\"asId\":\"" + asId + "\"}"```
  
 ##### 课表：
-  查看某一学期："{\"tag\":\"teachClassStud@schedule\",\"branch\":\"default\",\"params\":{\"termId\":" + term
-					+ ",\"studId\":" + stuID + "}}"
+  查看某一学期：```"{\"tag\":\"teachClassStud@schedule\",\"branch\":\"default\",\"params\":{\"termId\":" + term+ ",\"studId\":" + stuID + "}}"```
 ##### 课程：
-  查看某一课程分数："{\"tag\":\"termScore@inqueryTermScore\",\"branch\":\"default\",\"params\":{\"termId\":"
-					+ term + ",\"studId\":" + stuID + "}}"
-  查看某一学期分数："{\"tag\":\"archiveScore@queryCourseScore\",\"branch\":\"byTerm\",\"params\":{\"studId\":"
-					+ stuID + ",\"termId\":" + term + "},\"orderBy\":\"teachingTerm.termId, course.courName\"}"
+  查看某一课程分数：```"{\"tag\":\"termScore@inqueryTermScore\",\"branch\":\"default\",\"params\":{\"termId\":"+ term + ",\"studId\":" + stuID + "}}"```
+  查看某一学期分数：```"{\"tag\":\"archiveScore@queryCourseScore\",\"branch\":\"byTerm\",\"params\":{\"studId\":"+ stuID + ",\"termId\":" + term + "},\"orderBy\":\"teachingTerm.termId, course.courName\"}"```
        

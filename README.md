@@ -11,6 +11,8 @@ get.addHeader("Cookie", "loginPage=userLogin.jsp; alu=" + 教学号+ "; pwdStren
 |------|-------|
 | j_username | 教学号 |
 | j_password | （UIMS+教学号+密码）所生成的MD5 |
+| mousePath ||
+
 
 一次跳转-> 
 ```java

@@ -6,7 +6,7 @@
 addHeader("Cookie", "loginPage=userLogin.jsp; alu=" + 教学号+ "; pwdStrength=1;")
 ```
 
-### 登陆时，表单向http://uims.jlu.edu.cn/ntms/j_spring_security_check提交的数据
+### 登陆时，表单向```http://uims.jlu.edu.cn/ntms/j_spring_security_check```提交的数据
 | 数据 | 解释 |
 |------|-------|
 | j_username | 教学号 |
@@ -60,7 +60,7 @@ this.makeTransferPwd=function(b,d){//b:教学号  d:密码
     };
  ```
 
-一次跳转-> Location:http://uims.jlu.edu.cn/ntms/index.do
+一次跳转-> Location:```http://uims.jlu.edu.cn/ntms/index.do```
 ```java
 String login_suss = response.getFirstHeader("location").getValue().trim().split(";")[0];
 System.out.println("中间跳转 ---> " + login_suss);
@@ -75,10 +75,10 @@ System.out.println("跳转登陆:\t" + response.getStatusLine());
 ```
 
 ### 学生信息
-POST http://uims.jlu.edu.cn/ntms/action/getCurrentUserInfo.do
+POST ```http://uims.jlu.edu.cn/ntms/action/getCurrentUserInfo.do```
 
 
-### POST  http://uims.jlu.edu.cn/ntms/service/res.do 
+### POST  ```http://uims.jlu.edu.cn/ntms/service/res.do```
 #### 数据示例
 
 ##### 评教：

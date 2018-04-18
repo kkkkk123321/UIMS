@@ -10,9 +10,55 @@ get.addHeader("Cookie", "loginPage=userLogin.jsp; alu=" + 教学号+ "; pwdStren
 | 数据 | 解释 |
 |------|-------|
 | j_username | 教学号 |
-| j_password | （UIMS+教学号+密码）所生成的MD5 |
+| j_password | （UIMS+密码+教学号）所生成的MD5 |
 | mousePath ||
 
+```javaScript
+var form = dojo.byId("loginForm");
+
+var userName=form.j_username.value;
+var pwds = form.pwdPlain.value;
+var index=userName.indexOf('@');
+var userName1="";//正常我们输入时是不带@mails.jlu.edu.cn
+
+			if(index>0){
+				userName.substr(0, index);
+				userName1 = userName.substr(index+1,userName.length);
+			}else{//So Here !
+				userName1= userName;
+				pwdStrength = this.checkPwdStrength(pwds, userName);
+				setUserInfoCookie( 'pwdStrength', pwdStrength);
+			}
+      
+checkPwdStrength:function(s, username){//s:密码 username:教学号
+			if(s.length < 4)//小于4位密码
+				return 0;
+			if (s==username)//密码与教学号相同
+				return 0;
+			if (s=='000000')//密码纯零
+				return 0;
+        
+			var ls = 0;//  ig 全局不区分大小写
+			if (s.match(/[a-z]/ig)) //含有英文字母
+				ls++;
+			if (s.match(/[0-9]/ig)) //含有数字
+				ls++;
+			if (s.match(/(.[^a-z0-9])/ig))//含有除英文字母，数字外的其他
+				ls++;
+			if (s.length < 6 && ls > 0)//...
+				ls--;
+			return ls;
+		},
+    
+form.j_password.value = ntms.util.makeTransferPwd(userName1, pwds);
+this.makeTransferPwd=function(b,d){//b:教学号  d:密码
+    dojo.require("dojox.encoding.digests.MD5");
+    var a=dojox.encoding.digests;
+    var c="UIMS"+b+d;
+    var e=a.MD5(c,a.outputTypes.Hex);//摘要以16进制表示
+    return e
+    };
+ ```
 
 一次跳转-> Location:http://uims.jlu.edu.cn/ntms/index.do
 ```java

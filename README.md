@@ -14,7 +14,7 @@ get.addHeader("Cookie", "loginPage=userLogin.jsp; alu=" + 教学号+ "; pwdStren
 | mousePath ||
 
 
-一次跳转-> 
+一次跳转-> Location:http://uims.jlu.edu.cn/ntms/index.do
 ```java
 String login_suss = response.getFirstHeader("location").getValue().trim().split(";")[0];
 System.out.println("中间跳转 ---> " + login_suss);

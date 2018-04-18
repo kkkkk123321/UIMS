@@ -3,7 +3,7 @@
 
 ### 由于2017年12月教务系统的一次更新，使得Cookie信息需要手动添加部分数据
 ```java
-get.addHeader("Cookie", "loginPage=userLogin.jsp; alu=" + 教学号+ "; pwdStrength=1;")
+addHeader("Cookie", "loginPage=userLogin.jsp; alu=" + 教学号+ "; pwdStrength=1;")
 ```
 
 ### 登陆时，表单向http://uims.jlu.edu.cn/ntms/j_spring_security_check提交的数据

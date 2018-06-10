@@ -11,7 +11,7 @@ addHeader("Cookie", "loginPage=userLogin.jsp; alu=" + 教学号+ "; pwdStrength=
 |------|-------|
 | j_username | 教学号 |
 | j_password | （UIMS+密码+教学号）所生成的MD5 |
-| mousePath ||
+| mousePath | 滑动验证数据 |
 
 ```javaScript
 var form = dojo.byId("loginForm");
